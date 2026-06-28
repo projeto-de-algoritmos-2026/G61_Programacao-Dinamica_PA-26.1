@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Programação Dinâmica</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="/algorithms/knapsack/style.css">
+  <link rel="stylesheet" href="../../styleHeader.css">
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="ti ti-topology-star-3" aria-hidden="true"></i>
+            </div>
+            <span class="logo-text">Prog<span>Dinâmica</span></span>
+        </a>
+
+        <div class="nav-links">
+            <a href="#" class="active">
+                <i class="ti ti-home" aria-hidden="true"></i>
+                Home
+            </a>
+            <a href="#">
+                <i class="ti ti-users" aria-hidden="true"></i>
+                Sobre nós
+            </a>
+            <a href="#">
+                <i class="ti ti-backpack" aria-hidden="true"></i>
+                Knapsack
+            </a>
+            <a href="#">
+                <i class="ti ti-route" aria-hidden="true"></i>
+                Bellman-Ford
+            </a>
+            <a href="#">
+                <i class="ti ti-mail" aria-hidden="true"></i>
+                Contato
+            </a>
+        </div>
+    </nav>
+</header>
+
+<div class="page">
+
+  <div class="title-row">
+    <div class="title-icon"><i class="ti ti-backpack" aria-hidden="true"></i></div>
+    <h1>Simulador de <span>Programação Dinâmica</span></h1>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Entrada — Knapsack 0/1</div>
+    <div class="input-row">
+      <div class="field">
+        <label for="cap">Capacidade (W)</label>
+        <input type="number" id="cap" value="6" min="1" max="25">
+      </div>
+      <div class="field">
+        <label for="nitems">Itens (n)</label>
+        <input type="number" id="nitems" value="3" min="1" max="24">
+      </div>
+      <button class="btn primary" onclick="autoGenerate()">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>Gerar automaticamente
+      </button>
+      <button class="btn" onclick="solve()">
+        <i class="ti ti-player-play" aria-hidden="true"></i>Resolver
+      </button>
+    </div>
+    <div class="item-list" id="item-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Tabela DP</div>
+    <div class="matrix-wrap" id="matrix-wrap">
+      <p class="empty-msg">Resolva o problema para ver a tabela.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Legenda e navegação</div>
+    <div class="legend-row">
+      <div class="legend-text" id="legend-text">Resolva o problema para iniciar a navegação passo a passo.</div>
+      <div class="opt-badge" id="opt-badge" style="display:none"></div>
+    </div>
+    <div class="legend-controls">
+      <div class="nav-btns">
+        <button class="btn sm" onclick="stepNav(-1)">
+          <i class="ti ti-arrow-left" aria-hidden="true"></i>Anterior
+        </button>
+        <span class="step-counter" id="step-counter">—</span>
+        <button class="btn sm" onclick="stepNav(1)">
+          Próximo<i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="overlay-row">
+        <input type="checkbox" id="show-overlay" checked onchange="renderMatrix()">
+        <label for="show-overlay">Mostrar overlay SVG na matriz</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Árvore recursiva</div>
+    <div id="tree-wrap" class="tree-wrap">
+      <p class="empty-msg">A árvore aparece após resolver.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="/algorithms/knapsack/script.js"></script>
+</body>
+</html>
