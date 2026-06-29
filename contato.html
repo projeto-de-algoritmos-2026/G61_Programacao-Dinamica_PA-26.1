@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato — ProgDinâmica</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styleHeader.css">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 4rem 2rem 3.5rem;
+      text-align: center;
+    }
+    .page-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+    .page-hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111;
+      margin-bottom: 0.75rem;
+    }
+    .page-hero p {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.75;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── LAYOUT ── */
+    .content { max-width: 860px; margin: 0 auto; padding: 4rem 2rem; }
+    .divider { border: none; border-top: 1px solid #e5e5e5; max-width: 860px; margin: 0 auto; }
+
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── CONTACT CARDS ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .contact-card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .contact-card:hover {
+      border-color: #bfdbfe;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.08);
+    }
+    .contact-card-top {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .contact-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 9px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .contact-avatar.second { background: #1d4ed8; }
+    .contact-name { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 2px; }
+    .contact-role {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #2563eb;
+      font-weight: 500;
+    }
+    .contact-role i { font-size: 13px; }
+
+    .contact-card-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      color: #444;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      word-break: break-all;
+    }
+    .contact-link:hover {
+      background: #f5f5f5;
+      border-color: #d1d5db;
+      color: #111;
+    }
+    .contact-link i { font-size: 16px; color: #2563eb; flex-shrink: 0; }
+    .contact-link-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 1px;
+    }
+    .contact-link span { display: flex; flex-direction: column; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .info-box i { font-size: 18px; color: #2563eb; flex-shrink: 0; margin-top: 1px; }
+    .info-box p { font-size: 13px; color: #666; line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid #e5e5e5;
+      padding: 2rem;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .footer-brand { display: flex; flex-direction: column; gap: 8px; }
+    .footer-brand a { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .footer-brand-icon {
+      width: 32px; height: 32px;
+      background: #2563eb; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 16px;
+    }
+    .footer-brand-text { font-size: 15px; font-weight: 500; color: #111; }
+    .footer-brand-text span { color: #2563eb; }
+    .footer-brand p { font-size: 13px; color: #888; max-width: 220px; line-height: 1.6; }
+    .footer-cols { display: flex; gap: 3rem; }
+    .footer-col { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-label { font-size: 12px; font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: 0.06em; }
+    .footer-col a { font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .footer-col a:hover { color: #2563eb; }
+    .footer-col a i { font-size: 14px; }
+    .footer-bottom {
+      border-top: 1px solid #e5e5e5;
+      margin: 2rem auto 0;
+      padding-top: 1rem;
+      max-width: 960px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-bottom span { font-size: 12px; color: #888; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 620px) {
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; }
+      .footer-cols { flex-direction: column; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <i class="ti ti-topology-star-3" aria-hidden="true"></i>
+      </div>
+      <span class="logo-text">Prog<span>Dinâmica</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"><i class="ti ti-home" aria-hidden="true"></i>Home</a>
+      <a href="sobre.html"><i class="ti ti-users" aria-hidden="true"></i>Sobre nós</a>
+      <a href="#"><i class="ti ti-backpack" aria-hidden="true"></i>Knapsack</a>
+      <a href="#"><i class="ti ti-route" aria-hidden="true"></i>Bellman-Ford</a>
+      <a href="contato.html" class="active"><i class="ti ti-mail" aria-hidden="true"></i>Contato</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ══ PAGE HERO ══ -->
+<div class="page-hero">
+  <div class="page-hero-eyebrow">
+    <i class="ti ti-mail"></i>
+    Contato
+  </div>
+  <h1>Fale com a equipe</h1>
+  <p>Dúvidas, sugestões ou contribuições ao projeto são bem-vindas. Entre em contato diretamente com os desenvolvedores.</p>
+</div>
+
+<!-- ══ CARDS DE CONTATO ══ -->
+<div class="content">
+  <div class="section-eyebrow">Desenvolvedores</div>
+  <h2 class="section-title">Canais de contato</h2>
+
+  <div class="contact-grid">
+
+    <!-- Eduardo -->
+    <div class="contact-card">
+      <div class="contact-card-top">
+        <div class="contact-avatar">EV</div>
+        <div>
+          <div class="contact-name">Eduardo Valadares</div>
+          <div class="contact-role"><i class="ti ti-code"></i>Desenvolvedor</div>
+        </div>
+      </div>
+      <div class="contact-card-body">
+        <a href="mailto:eduardo.valadares@outlook.com" class="contact-link">
+          <i class="ti ti-mail"></i>
+          <span>
+            <span class="contact-link-label">E-mail</span>
+            eduardo.valadares@outlook.com
+          </span>
+        </a>
+        <a href="https://github.com/EduOValadares" target="_blank" rel="noopener" class="contact-link">
+          <i class="ti ti-brand-github"></i>
+          <span>
+            <span class="contact-link-label">GitHub</span>
+            github.com/EduOValadares
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Caio -->
+    <div class="contact-card">
+      <div class="contact-card-top">
+        <div class="contact-avatar second">CV</div>
+        <div>
+          <div class="contact-name">Caio Venâncio</div>
+          <div class="contact-role"><i class="ti ti-code"></i>Desenvolvedor</div>
+        </div>
+      </div>
+      <div class="contact-card-body">
+        <a href="mailto:caio.venancio784@gmail.com" class="contact-link">
+          <i class="ti ti-mail"></i>
+          <span>
+            <span class="contact-link-label">E-mail</span>
+            caio.venancio784@gmail.com
+          </span>
+        </a>
+        <a href="https://github.com/caio-venancio" target="_blank" rel="noopener" class="contact-link">
+          <i class="ti ti-brand-github"></i>
+          <span>
+            <span class="contact-link-label">GitHub</span>
+            github.com/caio-venancio
+          </span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-box">
+    <i class="ti ti-info-circle"></i>
+    <p>Este é um projeto acadêmico desenvolvido na Universidade de Brasília. Para dúvidas sobre os algoritmos simulados, sugestões de melhoria ou relato de problemas técnicos, o e-mail é o canal preferencial de comunicação.</p>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html">
+        <div class="footer-brand-icon"><i class="ti ti-topology-star-3" aria-hidden="true"></i></div>
+        <span class="footer-brand-text">Prog<span>Dinâmica</span></span>
+      </a>
+      <p>Simulador interativo de algoritmos de programação dinâmica.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <span class="footer-col-label">Navegação</span>
+        <a href="index.html"><i class="ti ti-home"></i>Home</a>
+        <a href="sobre.html"><i class="ti ti-users"></i>Sobre nós</a>
+        <a href="contato.html"><i class="ti ti-mail"></i>Contato</a>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-label">Algoritmos</span>
+        <a href="#"><i class="ti ti-backpack"></i>Knapsack</a>
+        <a href="#"><i class="ti ti-route"></i>Bellman-Ford</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ProgDinâmica. Todos os direitos reservados.</span>
+  </div>
+</footer>
+
+</body>
+</html>
