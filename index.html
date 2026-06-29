@@ -1,97 +1,649 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Programação Dinâmica</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-    <link rel="stylesheet" href="styleHeader.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProgDinâmica — Simulador Interativo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styleHeader.css">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111; }
+
+    /* ── HERO ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 3rem;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 6rem 2rem 5rem;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+    .hero-badge i { font-size: 13px; }
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #111;
+      margin-bottom: 1rem;
+    }
+    .hero-title em { color: #2563eb; font-style: normal; }
+    .hero-sub {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #555;
+      margin-bottom: 2rem;
+      max-width: 440px;
+    }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #fff;
+      color: #555;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover { background: #f5f5f5; color: #111; }
+
+    /* ── DP TABLE VISUAL (hero right) ── */
+    .hero-visual {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .visual-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .visual-header-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #e5e5e5;
+    }
+    .visual-header-dot:first-child { background: #fca5a5; }
+    .visual-header-dot:nth-child(2) { background: #fcd34d; }
+    .visual-header-dot:nth-child(3) { background: #6ee7b7; }
+    .visual-header-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: #aaa;
+      font-family: "SF Mono", monospace;
+    }
+
+    .dp-table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    .dp-table th, .dp-table td {
+      width: 36px; height: 32px;
+      text-align: center;
+      border: 1px solid #e5e5e5;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .dp-table th {
+      background: #f9fafb;
+      color: #888;
+      font-weight: 500;
+    }
+    .cell-filled { background: #eff6ff; color: #2563eb; font-weight: 600; }
+    .cell-active { background: #2563eb !important; color: #fff !important; font-weight: 700; }
+    .cell-memo   { background: #f0fdf4; color: #16a34a; font-weight: 600; }
+
+    .bellman-box {
+      margin-top: 1rem;
+      background: #f9fafb;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.7;
+    }
+    .bellman-box .eq-label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .bellman-box .eq-accent { color: #2563eb; font-weight: 700; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #e5e5e5;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    /* ── MODES (2-col cards) ── */
+    .section { max-width: 1040px; margin: 0 auto; padding: 4.5rem 2rem; }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: #777;
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+
+    .modes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .mode-card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .mode-card:hover { border-color: #bfdbfe; box-shadow: 0 2px 12px rgba(37,99,235,0.08); }
+    .mode-icon {
+      width: 40px; height: 40px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px;
+      margin-bottom: 1rem;
+    }
+    .mode-icon.blue { background: #eff6ff; color: #2563eb; }
+    .mode-icon.green { background: #f0fdf4; color: #16a34a; }
+    .mode-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 6px;
+    }
+    .mode-card p { font-size: 13px; color: #666; line-height: 1.65; }
+    .mode-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 10px;
+    }
+    .mode-tag.blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .mode-tag.green { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+    /* ── FEATURES STRIP ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .feature-card {
+      background: #f9fafb;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 1.25rem 1.25rem 1.25rem;
+    }
+    .feature-card i { font-size: 20px; color: #2563eb; margin-bottom: 0.6rem; display: block; }
+    .feature-card h4 { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 4px; }
+    .feature-card p { font-size: 13px; color: #666; line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .step { display: flex; flex-direction: column; gap: 10px; }
+    .step-num {
+      width: 32px; height: 32px;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: "SF Mono", monospace;
+      flex-shrink: 0;
+    }
+    .step h4 { font-size: 14px; font-weight: 600; color: #111; }
+    .step p { font-size: 13px; color: #666; line-height: 1.65; }
+    .step-connector {
+      display: flex;
+      align-items: flex-start;
+      padding-top: 16px;
+    }
+    .step-connector-line {
+      flex: 1;
+      height: 1px;
+      background: #e5e5e5;
+      margin-top: 15px;
+    }
+
+    /* ── ALGO SECTION ── */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .algo-card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .algo-card-header {
+      padding: 1rem 1.25rem;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .algo-card-header i { font-size: 18px; color: #2563eb; }
+    .algo-card-header span { font-size: 14px; font-weight: 600; color: #111; }
+    .algo-card-body { padding: 1.25rem; }
+    .algo-card-body p { font-size: 13px; color: #666; line-height: 1.65; margin-bottom: 0.75rem; }
+    .algo-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .algo-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      color: #555;
+      border: 1px solid #e5e5e5;
+    }
+
+    /* ── CTA ── */
+    .cta-band {
+      background: #2563eb;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .cta-band h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .cta-band p { font-size: 15px; color: #bfdbfe; margin-bottom: 2rem; }
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #2563eb;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-white:hover { background: #eff6ff; }
+
+    /* ── FOOTER (inherited style from original) ── */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid #e5e5e5;
+      padding: 2rem;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .footer-brand { display: flex; flex-direction: column; gap: 8px; }
+    .footer-brand a { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .footer-brand-icon {
+      width: 32px; height: 32px;
+      background: #2563eb;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 16px;
+    }
+    .footer-brand-text { font-size: 15px; font-weight: 500; color: #111; }
+    .footer-brand-text span { color: #2563eb; }
+    .footer-brand p { font-size: 13px; color: #888; max-width: 220px; line-height: 1.6; }
+    .footer-cols { display: flex; gap: 3rem; }
+    .footer-col { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-label { font-size: 12px; font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: 0.06em; }
+    .footer-col a { font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .footer-col a:hover { color: #2563eb; }
+    .footer-col a i { font-size: 14px; }
+    .footer-bottom {
+      border-top: 1px solid #e5e5e5;
+      margin: 2rem auto 0;
+      padding-top: 1rem;
+      max-width: 960px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-bottom span { font-size: 12px; color: #888; }
+
+    /* ── ANIMATION ── */
+    @keyframes fill-in { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+    .cell-filled { animation: fill-in 0.25s ease both; }
+    .cell-active  { animation: fill-in 0.25s ease both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding: 3rem 1.25rem 2.5rem; }
+      .modes-grid, .features-grid, .steps, .algo-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; }
+      .footer-cols { flex-direction: column; gap: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="#" class="logo">
-                <div class="logo-icon">
-                    <i class="ti ti-topology-star-3" aria-hidden="true"></i>
-                </div>
-                <span class="logo-text">Prog<span>Dinâmica</span></span>
-            </a>
 
-            <div class="nav-links">
-                <a href="#" class="active">
-                    <i class="ti ti-home" aria-hidden="true"></i>
-                    Home
-                </a>
-                <a href="#">
-                    <i class="ti ti-users" aria-hidden="true"></i>
-                    Sobre nós
-                </a>
-                <a href="#">
-                    <i class="ti ti-backpack" aria-hidden="true"></i>
-                    Knapsack
-                </a>
-                <a href="#">
-                    <i class="ti ti-route" aria-hidden="true"></i>
-                    Bellman-Ford
-                </a>
-                <a href="#">
-                    <i class="ti ti-mail" aria-hidden="true"></i>
-                    Contato
-                </a>
-            </div>
-        </nav>
-    </header>
+<!-- ══ HEADER ══ -->
+<header>
+  <nav>
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <i class="ti ti-topology-star-3" aria-hidden="true"></i>
+      </div>
+      <span class="logo-text">Prog<span>Dinâmica</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="active"><i class="ti ti-home" aria-hidden="true"></i>Home</a>
+      <a href="#sobre"><i class="ti ti-users" aria-hidden="true"></i>Sobre nós</a>
+      <a href="#knapsack"><i class="ti ti-backpack" aria-hidden="true"></i>Knapsack</a>
+      <a href="#bellman"><i class="ti ti-route" aria-hidden="true"></i>Bellman-Ford</a>
+      <a href="#contato"><i class="ti ti-mail" aria-hidden="true"></i>Contato</a>
+    </div>
+  </nav>
+</header>
 
-    <div style="width: 100%; height: 100vh; background: #2563eb;"></div>
-    <div style="width: 100%; height: 100vh; background: #111111;"></div>
+<!-- ══ HERO ══ -->
+<section>
+  <div class="hero">
+    <!-- Left copy -->
+    <div>
+      <div class="hero-badge">
+        <i class="ti ti-sparkles"></i>
+        Ferramenta pedagógica interativa
+      </div>
+      <h1 class="hero-title">
+        Enxergue a lógica por trás de cada <em>decisão ótima</em>
+      </h1>
+      <p class="hero-sub">
+        Simule algoritmos de Programação Dinâmica passo a passo — avance, retroceda, e veja a Equação de Bellman se construindo em tempo real.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary"><i class="ti ti-player-play"></i>Abrir simulador</a>
+        <a href="#como-funciona" class="btn-secondary"><i class="ti ti-book-2"></i>Como funciona</a>
+      </div>
+    </div>
 
-    <footer style="background: #ffffff; border-top: 1px solid #e5e5e5; padding: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; max-width: 960px; margin: 0 auto;">
+    <!-- Right: DP table mock -->
+    <div class="hero-visual">
+      <div class="visual-header">
+        <div class="visual-header-dot"></div>
+        <div class="visual-header-dot"></div>
+        <div class="visual-header-dot"></div>
+        <span class="visual-header-label">Knapsack — Bottom-Up · passo 9/12</span>
+      </div>
 
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-            <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                <div style="width: 32px; height: 32px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px;">
-                <i class="ti ti-topology-star-3" aria-hidden="true"></i>
-                </div>
-                <span style="font-size: 15px; font-weight: 500; color: #111;">Prog<span style="color: #2563eb;">Dinâmica</span></span>
-            </a>
-            <p style="font-size: 13px; color: #888; max-width: 220px; line-height: 1.6;">
-                Simulador interativo de algoritmos de programação dinâmica.
-            </p>
-            </div>
+      <table class="dp-table" aria-label="Exemplo de tabela DP">
+        <thead>
+          <tr>
+            <th></th>
+            <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>i=0</th>
+            <td class="cell-filled">0</td><td class="cell-filled">0</td><td class="cell-filled">0</td>
+            <td class="cell-filled">0</td><td class="cell-filled">0</td><td class="cell-filled">0</td>
+          </tr>
+          <tr>
+            <th>i=1</th>
+            <td class="cell-filled">0</td><td class="cell-filled">0</td><td class="cell-filled">4</td>
+            <td class="cell-filled">4</td><td class="cell-filled">4</td><td class="cell-filled">4</td>
+          </tr>
+          <tr>
+            <th>i=2</th>
+            <td class="cell-filled">0</td><td class="cell-filled">0</td><td class="cell-filled">4</td>
+            <td class="cell-filled">5</td><td class="cell-filled">5</td><td class="cell-active">9</td>
+          </tr>
+          <tr>
+            <th>i=3</th>
+            <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+        </tbody>
+      </table>
 
-            <div style="display: flex; gap: 3rem;">
+      <div class="bellman-box">
+        <div class="eq-label">Equação de Bellman — célula atual</div>
+        <span class="eq-accent">OPT(2, 5)</span> = max(OPT(1, 5), <span class="eq-accent">v₂</span> + OPT(1, 5−w₂))
+        = max(4, 5 + 4) = <span class="eq-accent">9</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <span style="font-size: 12px; font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: 0.06em;">Navegação</span>
-                <a href="#" style="font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                <i class="ti ti-home" aria-hidden="true" style="font-size: 14px;"></i>Home
-                </a>
-                <a href="#" style="font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                <i class="ti ti-users" aria-hidden="true" style="font-size: 14px;"></i>Sobre nós
-                </a>
-                <a href="#" style="font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                <i class="ti ti-mail" aria-hidden="true" style="font-size: 14px;"></i>Contato
-                </a>
-            </div>
+<hr class="divider">
 
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <span style="font-size: 12px; font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: 0.06em;">Algoritmos</span>
-                <a href="#" style="font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                <i class="ti ti-backpack" aria-hidden="true" style="font-size: 14px;"></i>Knapsack
-                </a>
-                <a href="#" style="font-size: 13px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                <i class="ti ti-route" aria-hidden="true" style="font-size: 14px;"></i>Bellman-Ford
-                </a>
-            </div>
+<!-- ══ MODOS ══ -->
+<section id="modos" class="section">
+  <div class="section-eyebrow">Duas abordagens</div>
+  <h2 class="section-title">Escolha como explorar o algoritmo</h2>
+  <p class="section-sub">Cada abordagem revela um ângulo diferente da Programação Dinâmica — escolha a que melhor se encaixa na sua forma de aprender.</p>
 
-            </div>
+  <div class="modes-grid">
+    <div class="mode-card">
+      <div class="mode-icon blue"><i class="ti ti-table"></i></div>
+      <h3>Iterativa — Bottom-Up</h3>
+      <p>Preencha a Tabela de Custos de forma progressiva com laços de repetição. Veja as dependências entre células desenhadas via setas SVG conforme cada valor é computado.</p>
+      <span class="mode-tag blue">Tabela de DP</span>
+    </div>
+    <div class="mode-card">
+      <div class="mode-icon green"><i class="ti ti-binary-tree"></i></div>
+      <h3>Recursiva — Top-Down + Memoization</h3>
+      <p>Expanda passo a passo a Árvore de Chamadas Recursivas e observe como subproblemas já computados são reutilizados, eliminando recalculos redundantes.</p>
+      <span class="mode-tag green">Árvore de Chamadas</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ FEATURES ══ -->
+<section id="como-funciona" class="section">
+  <div class="section-eyebrow">Recursos</div>
+  <h2 class="section-title">Tudo que você precisa para entender PD de verdade</h2>
+  <p class="section-sub">Cada recurso foi pensado para eliminar a abstração e tornar o raciocínio por trás dos algoritmos completamente transparente.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <i class="ti ti-arrows-left-right"></i>
+      <h4>Execução bidirecional</h4>
+      <p>Avance e retroceda passo a passo. Desfaça decisões e compare estados anteriores sem perder o contexto.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-vector-bezier"></i>
+      <h4>Overlays SVG de dependência</h4>
+      <p>Setas animadas mostram de quais células ou nós cada valor depende — a tomada de decisão tornada visual.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-math-function"></i>
+      <h4>Painel de Equação de Bellman</h4>
+      <p>Acompanhe em tempo real qual instância da função OPT(i, j) está sendo resolvida e por qual caminho.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-highlight"></i>
+      <h4>Destaque de células ativas</h4>
+      <p>A célula atual, seus predecessores e os valores memoizados são coloridos distintamente para facilitar o rastreamento.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-database"></i>
+      <h4>Tabela de Memoization</h4>
+      <p>Na abordagem Top-Down, veja o cache crescer em tempo real — cada hit evitado é marcado de forma explícita.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-adjustments"></i>
+      <h4>Entrada personalizável</h4>
+      <p>Defina pesos, valores e capacidade (Knapsack) ou vértices e arestas (Bellman-Ford) diretamente na interface.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ ALGORITMOS ══ -->
+<section id="algoritmos" class="section">
+  <div class="section-eyebrow">Algoritmos disponíveis</div>
+  <h2 class="section-title">Dois clássicos de PD, completamente desmistificados</h2>
+  <p class="section-sub">Cada simulador é construído do zero para o algoritmo específico, com visualizações e notações adequadas ao seu modelo.</p>
+
+  <div class="algo-grid">
+    <!-- Knapsack -->
+    <div class="algo-card" id="knapsack">
+      <div class="algo-card-header">
+        <i class="ti ti-backpack"></i>
+        <span>Problema da Mochila (0/1 Knapsack)</span>
+      </div>
+      <div class="algo-card-body">
+        <p>Dado um conjunto de itens com pesos e valores e uma capacidade máxima, encontre a combinação de itens que maximiza o valor total sem exceder a capacidade.</p>
+        <p>O simulador constrói a matriz <code>OPT[i][w]</code> completa e permite que você rastreie qual item entrou na solução ótima ao refazer o caminho de trás para frente.</p>
+        <div class="algo-tag-row">
+          <span class="algo-tag">Otimização combinatória</span>
+          <span class="algo-tag">O(n·W)</span>
+          <span class="algo-tag">Recorrência clássica</span>
         </div>
+      </div>
+    </div>
 
-        <div style="border-top: 1px solid #e5e5e5; margin-top: 2rem; padding-top: 1rem; max-width: 960px; margin: 2rem auto 0; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: #888;">© 2026 ProgDinâmica. Todos os direitos reservados.</span>
+    <!-- Bellman-Ford -->
+    <div class="algo-card" id="bellman">
+      <div class="algo-card-header">
+        <i class="ti ti-route"></i>
+        <span>Bellman-Ford — Caminhos Mínimos</span>
+      </div>
+      <div class="algo-card-body">
+        <p>Encontre o caminho de menor custo de uma fonte a todos os vértices de um grafo, mesmo com arestas de peso negativo — e detecte ciclos negativos.</p>
+        <p>O simulador anima cada relaxamento de aresta e exibe a tabela de distâncias <code>OPT[v][i]</code> evoluindo a cada iteração sobre todas as arestas do grafo.</p>
+        <div class="algo-tag-row">
+          <span class="algo-tag">Grafos com pesos negativos</span>
+          <span class="algo-tag">O(V·E)</span>
+          <span class="algo-tag">Detecção de ciclo</span>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    </footer>
+<hr class="divider">
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="section">
+  <div class="section-eyebrow">Como usar</div>
+  <h2 class="section-title">Em três passos</h2>
+  <p class="section-sub">Sem instalação, sem configuração. Abra, configure e explore.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Configure a instância</h4>
+      <p>Insira os dados do problema — itens, pesos, valores ou grafo — e escolha o algoritmo e a abordagem (Bottom-Up ou Top-Down).</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Execute passo a passo</h4>
+      <p>Avance célula por célula ou nó por nó. Use o botão de retroceder para revisitar qualquer decisão anterior.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Leia a Equação de Bellman</h4>
+      <p>O painel matemático traduz cada passo em termos de OPT(i, j), ligando a execução visual à teoria por trás do algoritmo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<div class="cta-band">
+  <h2>Pronto para ver PD em ação?</h2>
+  <p>Sem instalação — rode diretamente no navegador.</p>
+  <a href="#" class="btn-white"><i class="ti ti-player-play"></i>Iniciar simulação</a>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#">
+        <div class="footer-brand-icon"><i class="ti ti-topology-star-3" aria-hidden="true"></i></div>
+        <span class="footer-brand-text">Prog<span>Dinâmica</span></span>
+      </a>
+      <p>Simulador interativo de algoritmos de programação dinâmica.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <span class="footer-col-label">Navegação</span>
+        <a href="#"><i class="ti ti-home"></i>Home</a>
+        <a href="#sobre"><i class="ti ti-users"></i>Sobre nós</a>
+        <a href="#contato"><i class="ti ti-mail"></i>Contato</a>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-label">Algoritmos</span>
+        <a href="#knapsack"><i class="ti ti-backpack"></i>Knapsack</a>
+        <a href="#bellman"><i class="ti ti-route"></i>Bellman-Ford</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ProgDinâmica. Todos os direitos reservados.</span>
+  </div>
+</footer>
+
 </body>
 </html>
