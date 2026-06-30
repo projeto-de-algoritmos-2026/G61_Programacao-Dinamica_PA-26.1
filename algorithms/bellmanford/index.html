@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bellman-Ford — ProgDinâmica</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="../../styleHeader.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <nav>
+    <a href="../../index.html" class="logo">
+      <div class="logo-icon"><i class="ti ti-topology-star-3" aria-hidden="true"></i></div>
+      <span class="logo-text">Prog<span>Dinâmica</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="../../index.html"><i class="ti ti-home" aria-hidden="true"></i>Home</a>
+      <a href="../../sobre.html"><i class="ti ti-users" aria-hidden="true"></i>Sobre nós</a>
+      <a href="../knapsack/index.html"><i class="ti ti-backpack" aria-hidden="true"></i>Knapsack</a>
+      <a href="index.html" class="active"><i class="ti ti-route" aria-hidden="true"></i>Bellman-Ford</a>
+      <a href="../../contato.html"><i class="ti ti-mail" aria-hidden="true"></i>Contato</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ══ PAGE HERO ══ -->
+<div class="page-hero">
+  <div class="page-hero-eyebrow">
+    <i class="ti ti-route"></i>
+    Caminhos Mínimos
+  </div>
+  <h1>Simulador de <span>Bellman-Ford</span></h1>
+  <p>Monte seu próprio grafo, defina pesos (inclusive negativos) e acompanhe passo a passo como o algoritmo relaxa arestas até encontrar os caminhos mínimos — ou detecta ciclos negativos.</p>
+</div>
+
+<!-- ══ MAIN PAGE ══ -->
+<div class="page">
+
+  <!-- TOP CONTROLS -->
+  <div class="card">
+    <div class="section-label">Configuração do Grafo</div>
+    <div class="input-row">
+      <div class="field" style="max-width:130px">
+        <label for="num-vertices">Vértices (n)</label>
+        <input type="number" id="num-vertices" value="5" min="2" max="10">
+      </div>
+      <button class="btn primary" onclick="autoGenerate()">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>Gerar automaticamente
+      </button>
+      <button class="btn" onclick="clearGraph()">
+        <i class="ti ti-trash" aria-hidden="true"></i>Limpar grafo
+      </button>
+      <button class="btn primary" onclick="runBellmanFord()" id="run-btn" style="margin-left:auto">
+        <i class="ti ti-player-play" aria-hidden="true"></i>Resolver
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- EDITOR COLUMN -->
+    <div class="editor-col">
+
+      <div class="card">
+        <div class="section-label">Editor de Grafo</div>
+
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tab-draw" onclick="setMode('draw')">
+            <i class="ti ti-pencil"></i>Desenhar
+          </button>
+          <button class="mode-tab" id="tab-move" onclick="setMode('move')">
+            <i class="ti ti-hand-move"></i>Mover nós
+          </button>
+        </div>
+
+        <canvas id="graph-canvas" height="280"></canvas>
+        <p class="canvas-hint" id="canvas-hint">
+          Clique para adicionar vértice · Clique em dois vértices para criar aresta
+        </p>
+
+        <!-- Manual edge input -->
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:flex-end;">
+          <div class="field" style="max-width:80px">
+            <label>De</label>
+            <input type="number" id="edge-from" placeholder="0" min="0">
+          </div>
+          <div class="field" style="max-width:80px">
+            <label>Para</label>
+            <input type="number" id="edge-to" placeholder="1" min="0">
+          </div>
+          <div class="field" style="max-width:90px">
+            <label>Peso</label>
+            <input type="number" id="edge-weight" placeholder="-2" value="1">
+          </div>
+          <button class="btn" onclick="addEdgeManual()"><i class="ti ti-plus"></i>Aresta</button>
+        </div>
+
+        <div class="source-select">
+          <label>Vértice fonte:</label>
+          <select id="source-vertex"></select>
+        </div>
+      </div>
+
+      <!-- Edge List -->
+      <div class="card">
+        <div class="section-label">Arestas do Grafo</div>
+        <div class="edge-list" id="edge-list">
+          <p class="empty-msg" style="padding:1rem 0">Nenhuma aresta adicionada.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIZ COLUMN -->
+    <div class="viz-col">
+
+      <!-- Graph SVG -->
+      <div class="card">
+        <div class="section-label">Visualização do Grafo</div>
+        <svg id="graph-display" height="300" viewBox="0 0 600 300"></svg>
+      </div>
+
+      <!-- DP Table -->
+      <div class="card">
+        <div class="section-label">Tabela de Distâncias — OPT[v][k]</div>
+        <div class="dist-table-wrap">
+          <div id="dist-table-container">
+            <p class="empty-msg">Resolva o problema para ver a tabela de distâncias.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend & Navigation -->
+      <div class="card">
+        <div class="section-label">Legenda e Navegação</div>
+
+        <div class="neg-cycle-banner" id="neg-cycle-banner">
+          <i class="ti ti-alert-triangle"></i>
+          <span>Ciclo negativo detectado! O algoritmo não converge — distâncias indefinidas.</span>
+        </div>
+
+        <div class="legend-row">
+          <div class="legend-text" id="legend-text">
+            Monte o grafo e clique em <strong>Resolver</strong> para iniciar a navegação passo a passo.
+          </div>
+          <div class="opt-badge" id="opt-badge" style="display:none"></div>
+        </div>
+
+        <div class="bellman-eq" id="bellman-eq" style="display:none">
+          <div class="eq-label">Equação de Bellman — relaxamento atual</div>
+          <div id="bellman-eq-text"></div>
+        </div>
+
+        <div class="color-legend">
+          <div class="color-item"><div class="color-dot dot-active"></div>Aresta sendo relaxada</div>
+          <div class="color-item"><div class="color-dot dot-improved"></div>Distância melhorada</div>
+          <div class="color-item"><div class="color-dot dot-source"></div>Vértice fonte</div>
+          <div class="color-item"><div class="color-dot dot-path"></div>Caminho mínimo final</div>
+        </div>
+
+        <div class="legend-controls">
+          <div class="nav-btns">
+            <button class="btn sm" onclick="stepNav(-1)" id="btn-prev" disabled>
+              <i class="ti ti-arrow-left" aria-hidden="true"></i>Anterior
+            </button>
+            <span class="step-counter" id="step-counter">—</span>
+            <button class="btn sm" onclick="stepNav(1)" id="btn-next" disabled>
+              Próximo<i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <button class="btn sm" onclick="jumpToEnd()" id="btn-end" disabled>
+            <i class="ti ti-player-skip-forward"></i>Resultado final
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="../../index.html">
+        <div class="footer-brand-icon"><i class="ti ti-topology-star-3" aria-hidden="true"></i></div>
+        <span class="footer-brand-text">Prog<span>Dinâmica</span></span>
+      </a>
+      <p>Simulador interativo de algoritmos de programação dinâmica.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <span class="footer-col-label">Navegação</span>
+        <a href="../../index.html"><i class="ti ti-home"></i>Home</a>
+        <a href="../../sobre.html"><i class="ti ti-users"></i>Sobre nós</a>
+        <a href="../../contato.html"><i class="ti ti-mail"></i>Contato</a>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-label">Algoritmos</span>
+        <a href="../knapsack/index.html"><i class="ti ti-backpack"></i>Knapsack</a>
+        <a href="index.html"><i class="ti ti-route"></i>Bellman-Ford</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-footer" style="border-top:1px solid #e5e5e5;margin:2rem auto 0;padding-top:1rem;max-width:1100px;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:12px;color:#888">© 2026 ProgDinâmica. Todos os direitos reservados.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
