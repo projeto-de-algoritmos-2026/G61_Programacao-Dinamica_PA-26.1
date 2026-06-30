@@ -10,38 +10,63 @@
 </head>
 <body>
 
-<header>
-    <nav>
-        <a href="#" class="logo">
-            <div class="logo-icon">
-                <i class="ti ti-topology-star-3" aria-hidden="true"></i>
-            </div>
-            <span class="logo-text">Prog<span>Dinâmica</span></span>
-        </a>
+<!-- ══ HEADER 100% INLINE COM KNAPSACK ATIVO ══ -->
+<header style="box-sizing: border-box; margin: 0; padding: 0;">
+  <nav style="box-sizing: border-box; margin: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: #ffffff; border-bottom: 1px solid #e5e5e5;">
+    
+    <!-- Logo -->
+    <a href="../../index.html" style="box-sizing: border-box; margin: 0; padding: 0; display: flex; align-items: center; gap: 10px; text-decoration: none;">
+      <div style="box-sizing: border-box; margin: 0; padding: 0; width: 32px; height: 32px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px;">
+        <i class="ti ti-topology-star-3" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0;"></i>
+      </div>
+      <span style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px; font-weight: 500; color: #111;">
+        Prog<span style="box-sizing: border-box; margin: 0; padding: 0; color: #2563eb;">Dinâmica</span>
+      </span>
+    </a>
 
-        <div class="nav-links">
-            <a href="#" class="active">
-                <i class="ti ti-home" aria-hidden="true"></i>
-                Home
-            </a>
-            <a href="#">
-                <i class="ti ti-users" aria-hidden="true"></i>
-                Sobre nós
-            </a>
-            <a href="#">
-                <i class="ti ti-backpack" aria-hidden="true"></i>
-                Knapsack
-            </a>
-            <a href="#">
-                <i class="ti ti-route" aria-hidden="true"></i>
-                Bellman-Ford
-            </a>
-            <a href="#">
-                <i class="ti ti-mail" aria-hidden="true"></i>
-                Contato
-            </a>
-        </div>
-    </nav>
+    <!-- Nav Links -->
+    <div style="box-sizing: border-box; margin: 0; padding: 0; display: flex; align-items: center; gap: 4px;">
+      
+      <!-- Home (normal) -->
+      <a href="../../index.html" 
+         style="box-sizing: border-box; margin: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 14px; color: #555; text-decoration: none; transition: background 0.15s, color 0.15s; border: 1px solid transparent;"
+         onmouseenter="this.style.background='#f5f5f5'; this.style.color='#111'; this.style.borderColor='#e5e5e5';"
+         onmouseleave="this.style.background='transparent'; this.style.color='#555'; this.style.borderColor='transparent';">
+        <i class="ti ti-home" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px;"></i>Home
+      </a>
+      
+      <!-- Sobre nós (normal) -->
+      <a href="../../sobre.html" 
+         style="box-sizing: border-box; margin: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 14px; color: #555; text-decoration: none; transition: background 0.15s, color 0.15s; border: 1px solid transparent;"
+         onmouseenter="this.style.background='#f5f5f5'; this.style.color='#111'; this.style.borderColor='#e5e5e5';"
+         onmouseleave="this.style.background='transparent'; this.style.color='#555'; this.style.borderColor='transparent';">
+        <i class="ti ti-users" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px;"></i>Sobre nós
+      </a>
+      
+      <!-- Knapsack (ATIVO) -->
+      <a href="/algorithms/knapsack/index.html" 
+         style="box-sizing: border-box; margin: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 14px; text-decoration: none; transition: background 0.15s, color 0.15s; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
+        <i class="ti ti-backpack" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px;"></i>Knapsack
+      </a>
+      
+      <!-- Bellman-Ford (normal) -->
+      <a href="#bellman" 
+         style="box-sizing: border-box; margin: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 14px; color: #555; text-decoration: none; transition: background 0.15s, color 0.15s; border: 1px solid transparent;"
+         onmouseenter="this.style.background='#f5f5f5'; this.style.color='#111'; this.style.borderColor='#e5e5e5';"
+         onmouseleave="this.style.background='transparent'; this.style.color='#555'; this.style.borderColor='transparent';">
+        <i class="ti ti-route" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px;"></i>Bellman-Ford
+      </a>
+      
+      <!-- Contato (normal) -->
+      <a href="../../contato.html" 
+         style="box-sizing: border-box; margin: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 14px; color: #555; text-decoration: none; transition: background 0.15s, color 0.15s; border: 1px solid transparent;"
+         onmouseenter="this.style.background='#f5f5f5'; this.style.color='#111'; this.style.borderColor='#e5e5e5';"
+         onmouseleave="this.style.background='transparent'; this.style.color='#555'; this.style.borderColor='transparent';">
+        <i class="ti ti-mail" aria-hidden="true" style="box-sizing: border-box; margin: 0; padding: 0; font-size: 15px;"></i>Contato
+      </a>
+
+    </div>
+  </nav>
 </header>
 
 <div class="page">
