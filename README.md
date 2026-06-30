@@ -27,7 +27,7 @@ O código é construído em HTML, CSS e JavaScript puro, sem frameworks externos
 
 ## Vídeo
 
-Vídeo de apresentação do projeto ainda não disponível. Atualize este link quando o material de demonstração estiver pronto.
+Link do Video: (https://youtu.be/qwzZuwqB3PI)
 
 ## Screenshots
 
